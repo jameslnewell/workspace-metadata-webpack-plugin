@@ -1,0 +1,7 @@
+{
+  "name": "project-2",
+  "workspaces": [
+    "components/{atom,molecule}/*",
+    "website"
+  ]
+}
