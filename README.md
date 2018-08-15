@@ -118,20 +118,12 @@ const transform = async (metadata) => {
 
   // add a list of demo file paths that exist in the workspace
   workspaces = await Promise.all(metadata.workspaces.map(async (workspace) => {
-
-    // list the demo file paths
-    let demos = await glob('src/**/*.demo.js', {
-      cwd: workspace.path,
-      absolute: true
-    });
-
-    // make the file paths relative to avoid hashing issues
-    demos = demos.map(stringifyRequest)
-
-    demos = 
     return {
       ...workspace,
-      demos;
+      demos: await glob('src/**/*.demo.js', {
+        cwd: workspace.path,
+        absolute: true
+      })
     }
   }));
   
@@ -163,10 +155,12 @@ For example:
 > Import a workspace file so you can dynamically show a demo 
 
 ```js
-const stringify = (metadata) => `export default {
-  workspaces: [${metadata.workspaces.map(workspace => (`{
-    name: '${workspace.json.name}',
-    demo: () => import('${workspace.path}/src/index.demo.js')
-  }`))}]
-}`;
+function stringify(metadata) {
+  return `export default {
+    workspaces: [${metadata.workspaces.map(workspace => (`{
+      name: '${workspace.json.name}',
+      demo: () => import(${stringifyRequest(this, `${workspace.path}/src/index.demo.js`)})
+    }`))}]
+  }`;
+}
 ```

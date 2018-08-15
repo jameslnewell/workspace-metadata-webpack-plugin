@@ -51,14 +51,6 @@ export default async function(this: webpack.loader.LoaderContext, source: string
 
     // get the metadata
     let metadata = await getMetadata(context);
-    
-    // change paths to relative ones since absolute ones break the hashing - use `stringifyRequest`
-    // @see https://webpack.js.org/contribute/writing-a-loader/#absolute-paths
-    metadata.root.path = loaderUtils.stringifyRequest(this, metadata.root.path);
-    metadata.workspaces = metadata.workspaces.map(workspace => ({
-      ...workspace,
-      path: loaderUtils.stringifyRequest(this, workspace.path)
-    }));
 
     // the output can be cached
     this.cacheable(true);
